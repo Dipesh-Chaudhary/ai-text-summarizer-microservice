@@ -1,6 +1,9 @@
 import logging
 import sys
 
+from pydantic_settings import BaseSettings
+from functools import lru_cache
+
 from core.logging import InterceptHandler
 from loguru import logger
 from starlette.config import Config
@@ -28,3 +31,19 @@ logger.configure(handlers=[{"sink": sys.stderr, "level": LOGGING_LEVEL}])
 MODEL_PATH = config("MODEL_PATH", default="./ml/model/")
 MODEL_NAME = config("MODEL_NAME", default="model.pkl")
 INPUT_EXAMPLE = config("INPUT_EXAMPLE", default="./ml/model/examples/example.json")
+
+
+class Settings(BaseSettings):
+    PROJECT_NAME: str = "AI Text Summarizer Microservice"
+    API_V1_STR: str = "/api/v1"
+    # Add other settings like database URLs, secret keys, etc.
+    # Example: OPENAI_API_KEY: str | None = None # If using external APIs
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = 'utf-8'
+        extra = 'ignore' # Or 'forbid' if you want to be strict
+
+@lru_cache()
+def get_settings():
+    return Settings()
