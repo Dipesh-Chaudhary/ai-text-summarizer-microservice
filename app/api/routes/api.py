@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.routes import predictor
+from app.api.routes import summarize
 
 router = APIRouter()
-router.include_router(predictor.router, tags=["predictor"], prefix="/v1")
+router.include_router(summarize.router, tags=["summerizer"], prefix="/v1")
